@@ -64,7 +64,7 @@ def test_training():
     optim = torch.optim.Adam(ddpm.parameters(), lr=5e-4)
     dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
 
-    cfg = OmegaConf.create({"device": device, "log_step": 10, "use_wandb": False})
+    cfg = OmegaConf.create({"device": device, "log_step": 10, "wandb": {"use": False}})
     train_epoch(ddpm, dataloader, optim, 0, cfg)
 
     generate_samples(ddpm, device, "tmp/samples.png")

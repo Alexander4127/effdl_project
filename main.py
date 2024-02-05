@@ -53,7 +53,6 @@ def main(cfg: DictConfig):
         num_workers=cfg.loader.num_workers,
         shuffle=True
     )
-    print(f"Len loader: {len(dataloader)}")
     optim = hydra.utils.instantiate(cfg.optim, ddpm.parameters())
 
     for i in range(cfg.trainer.num_epochs):
