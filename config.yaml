@@ -1,0 +1,29 @@
+augments:
+  flip: true
+
+loader:
+  batch_size: 128
+  num_workers: 5
+
+arch:
+  in_channels: 3
+  out_channels: 3
+  hidden_size: 128
+
+steps:
+  beta_min: 1e-4
+  beta_max: 0.02
+  num_timesteps: 1000
+
+optim:
+  _target_: torch.optim.Adam
+  learning_rate: 1e-5
+  weight_decay: 0.01
+
+trainer:
+  log_step: 100
+  num_epochs: 100
+  wandb:
+    use: true
+    project: effdl_project
+    name: baseline
