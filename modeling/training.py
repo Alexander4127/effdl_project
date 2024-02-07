@@ -4,7 +4,7 @@ import torch
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid, save_image
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from typing import Tuple
 import wandb
 
