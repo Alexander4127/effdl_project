@@ -14,8 +14,7 @@ from modeling.unet import UnetModel
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
 def main(cfg: DictConfig):
-    if not hasattr(cfg.trainer, "device"):
-        cfg.trainer.device = "cuda" if torch.cuda.is_available() else "cpu"
+    cfg.trainer.device = "cuda" if torch.cuda.is_available() else "cpu"
     Path("saved").mkdir(exist_ok=True)
     Path("samples").mkdir(exist_ok=True)
 
