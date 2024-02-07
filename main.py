@@ -27,7 +27,7 @@ def main(cfg: DictConfig):
         betas=(cfg.steps.beta_min, cfg.steps.beta_max),
         num_timesteps=cfg.steps.num_timesteps,
     )
-    ddpm.to(cfg.trainer.device)
+    ddpm = ddpm.to(cfg.trainer.device)
     if cfg.trainer.wandb.use:
         wandb.watch(ddpm)
 
