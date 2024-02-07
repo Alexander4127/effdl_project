@@ -59,7 +59,7 @@ def main(cfg: DictConfig):
         torch.save(ddpm.state_dict(), f"saved/ch{i}.pth")
         inits, samples = generate_samples(ddpm, cfg.trainer.device, f"samples/{i:02d}.png")
         if cfg.trainer.wandb.use:
-            wandb.log({"init": wandb.Image(inits), "sample": wandb.Image(samples)}, step=i)
+            wandb.log({"init": wandb.Image(inits), "sample": wandb.Image(samples)}, step=(i + 1) * len(dataloader))
 
 
 if __name__ == "__main__":
