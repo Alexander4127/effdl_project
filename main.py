@@ -33,7 +33,8 @@ def main(cfg: DictConfig):
 
     train_transforms = transforms.Compose(
         [
-            transforms.ToTensor()
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ] +
         ([transforms.RandomHorizontalFlip(), transforms.RandomVerticalFlip()] if cfg.augments.flip else [])
     )

@@ -2,6 +2,7 @@ from typing import Dict, Tuple
 
 import torch
 import torch.nn as nn
+from torchvision import transforms
 
 
 class DiffusionModel(nn.Module):
@@ -42,6 +43,7 @@ class DiffusionModel(nn.Module):
             x_i = self.inv_sqrt_alphas[i].to(device) * (x_i - eps * self.one_minus_alpha_over_prod[i].to(device)) + \
                 self.sqrt_betas[i].to(device) * z
 
+        x_i = transforms.Normalize((-1, -1, -1), (2, 2, 2))(x_i)
         return z_i, x_i
 
 
