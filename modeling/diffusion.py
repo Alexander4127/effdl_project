@@ -6,10 +6,10 @@ import torch.nn as nn
 
 class DiffusionModel(nn.Module):
     def __init__(
-        self,
-        eps_model: nn.Module,
-        betas: Tuple[float, float],
-        num_timesteps: int,
+            self,
+            eps_model: nn.Module,
+            betas: Tuple[float, float],
+            num_timesteps: int,
     ):
         super().__init__()
         self.eps_model = eps_model
@@ -25,8 +25,8 @@ class DiffusionModel(nn.Module):
         eps = torch.randn_like(x).to(x.device)
 
         x_t = (
-            self.sqrt_alphas_cumprod[timestep, None, None, None].to(x.device) * x
-            + self.sqrt_one_minus_alpha_prod[timestep, None, None, None].to(x.device) * eps
+                self.sqrt_alphas_cumprod[timestep, None, None, None].to(x.device) * x
+                + self.sqrt_one_minus_alpha_prod[timestep, None, None, None].to(x.device) * eps
         )
 
         return self.criterion(eps, self.eps_model(x_t, timestep / self.num_timesteps))
@@ -37,9 +37,10 @@ class DiffusionModel(nn.Module):
         x_i = z_i.clone()
 
         for i in range(self.num_timesteps, 0, -1):
-            z = torch.randn(num_samples, *size) if i > 1 else 0
+            z = torch.randn(num_samples, *size).to(device) if i > 1 else 0
             eps = self.eps_model(x_i, torch.tensor(i / self.num_timesteps).repeat(num_samples, 1).to(device))
-            x_i = self.inv_sqrt_alphas[i] * (x_i - eps * self.one_minus_alpha_over_prod[i]) + self.sqrt_betas[i] * z
+            x_i = self.inv_sqrt_alphas[i].to(device) * (x_i - eps * self.one_minus_alpha_over_prod[i].to(device)) + \
+                self.sqrt_betas[i].to(device) * z
 
         return z_i, x_i
 
