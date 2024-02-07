@@ -15,7 +15,7 @@ from modeling.diffusion import DiffusionModel
 def train_step(model: DiffusionModel, inputs: torch.Tensor, optimizer: Optimizer, device: str):
     optimizer.zero_grad()
     inputs = inputs.to(device)
-    logging.info(f"Inputs = {inputs.device}.\nModel = {model.device}.\nDevice = {device}")
+    logging.info(f"Inputs = {inputs.device}.\nModel = {next(model.parameters()).device}.\nDevice = {device}")
     loss = model(inputs)
     loss.backward()
     optimizer.step()
