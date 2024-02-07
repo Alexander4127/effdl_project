@@ -19,7 +19,7 @@ def main(cfg: DictConfig):
     Path("saved").mkdir(exist_ok=True)
     Path("samples").mkdir(exist_ok=True)
 
-    if cfg.trainer.use_wandb:
+    if cfg.trainer.wandb.use:
         dict_cfg = OmegaConf.to_container(cfg, resolve=True)
         wandb.init(config=dict_cfg, project=cfg.trainer.wandb.project, name=cfg.trainer.wandb.name)
 
