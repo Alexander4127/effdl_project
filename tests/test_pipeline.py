@@ -1,5 +1,6 @@
 import numpy as np
 from omegaconf import OmegaConf
+from pathlib import Path
 import pytest
 import torch
 from torch.utils.data import DataLoader
@@ -61,6 +62,7 @@ def test_training(device, train_dataset):
             return self.dataset[self.idx]
 
     # note: implement and test a complete training procedure (including sampling)
+    Path("tmp").mkdir(exist_ok=True, parents=True)
     bs = 4
     sampled_dataset = OneSampleDataset(train_dataset, size=2 * bs)
     samples = torch.concat([sampled_dataset[i][0].unsqueeze(0) for i in range(2 * bs)])
