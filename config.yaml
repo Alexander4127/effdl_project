@@ -1,5 +1,5 @@
 augments:
-  flip: true
+  flip: false
 
 loader:
   batch_size: 128
