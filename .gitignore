@@ -2,3 +2,6 @@ wandb
 tmp
 saved
 samples
+/cifar10
+/ch.pt
+/gen_sample.png
