@@ -75,11 +75,11 @@ def test_training(device, train_dataset):
     )
     ddpm = ddpm.to(device)
 
-    optim = torch.optim.Adam(ddpm.parameters(), lr=5e-4)
+    optim = torch.optim.Adam(ddpm.parameters(), lr=1e-3)
     dataloader = DataLoader(sampled_dataset, batch_size=bs, shuffle=True)
 
-    cfg = OmegaConf.create({"device": device, "log_step": 10, "wandb": {"use": False}})
-    for i in tqdm(range(500)):
+    cfg = OmegaConf.create({"device": device, "log_step": 100, "wandb": {"use": False}})
+    for i in tqdm(range(10000)):
         train_epoch(ddpm, dataloader, optim, i, cfg)
 
     processing = Normalize((-1, -1, -1), (2, 2, 2))
