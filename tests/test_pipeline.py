@@ -15,7 +15,7 @@ from modeling.unet import UnetModel
 
 @pytest.fixture
 def train_dataset():
-    transforms = Compose([ToTensor(), Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+    transforms = Compose([ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     dataset = CIFAR10(
         "./data",
         train=True,
@@ -45,7 +45,8 @@ def test_train_on_one_batch(device, train_dataset):
     assert loss < 0.5
 
 
-def test_training():
+@pytest.mark.parametrize(["device"], [["cpu"], ["cuda"]])
+def test_training(device, train_dataset):
     class OneSampleDataset(torch.utils.data.Dataset):
         def __init__(self, parent: torch.utils.data.Dataset, size: int):
             assert size <= len(parent)
@@ -60,15 +61,8 @@ def test_training():
             return self.dataset[self.idx]
 
     # note: implement and test a complete training procedure (including sampling)
-    transforms = Compose([ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    dataset = CIFAR10(
-        "./data",
-        train=True,
-        transform=transforms
-    )
-    bs = 2
-    sampled_dataset = OneSampleDataset(dataset, size=2 * bs)
-    device = "cpu"
+    bs = 4
+    sampled_dataset = OneSampleDataset(train_dataset, size=2 * bs)
     samples = torch.concat([sampled_dataset[i][0].unsqueeze(0) for i in range(2 * bs)])
     save_image(make_grid(samples, nrow=4), "tmp/dataset.png")
 
@@ -77,14 +71,14 @@ def test_training():
         betas=(1e-4, 0.02),
         num_timesteps=1000,
     )
-    ddpm.to(device)
+    ddpm = ddpm.to(device)
 
     optim = torch.optim.Adam(ddpm.parameters(), lr=5e-4)
     dataloader = DataLoader(sampled_dataset, batch_size=bs, shuffle=True)
 
     cfg = OmegaConf.create({"device": device, "log_step": 10, "wandb": {"use": False}})
-    for _ in tqdm(range(1000)):
-        train_epoch(ddpm, dataloader, optim, 0, cfg)
+    for i in tqdm(range(500)):
+        train_epoch(ddpm, dataloader, optim, i, cfg)
 
     processing = Normalize((-1, -1, -1), (2, 2, 2))
     generate_samples(ddpm, device, "tmp/samples", processing)
