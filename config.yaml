@@ -1,5 +1,5 @@
 augments:
-  flip: false
+  flip: true
 
 loader:
   batch_size: 128
@@ -21,9 +21,9 @@ optim:
 
 trainer:
   log_step: 100
-  num_epochs: 100
+  num_epochs: 20
   device: cpu
   wandb:
     use: true
     project: effdl_project
-    name: baseline
+    name: flip_augments
