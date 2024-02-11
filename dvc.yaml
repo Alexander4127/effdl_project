@@ -1,0 +1,22 @@
+stages:
+  prepare_data:
+    cmd: python prepare_data.py
+    deps:
+      - prepare_data.py
+    outs:
+      - cifar10
+  train:
+    cmd: python train.py
+    deps:
+      - cifar10
+      - config.yaml
+      - train.py
+    outs:
+      - ch.pt
+  eval:
+    cmd: python eval.py
+    deps:
+      - ch.pt
+      - config.yaml
+    outs:
+      - gen_sample.png
