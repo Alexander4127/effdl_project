@@ -49,7 +49,7 @@ class DiffusionModel(nn.Module):
 
 
 def get_schedules(beta1: float, beta2: float, num_timesteps: int) -> Dict[str, torch.Tensor]:
-    assert beta1 < beta2 < 1.0, "beta1 and beta2 must be in (0, 1)"
+    assert 0 < beta1 < beta2 < 1.0, "beta1 and beta2 must be in (0, 1)"
 
     betas = (beta2 - beta1) * torch.arange(0, num_timesteps + 1, dtype=torch.float32) / num_timesteps + beta1
     sqrt_betas = torch.sqrt(betas)
