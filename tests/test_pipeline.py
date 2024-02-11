@@ -51,7 +51,7 @@ def test_training():
             assert size <= len(parent)
             self.dataset = parent
             self.size = size
-            self.idx = np.random.choice(np.arange(len(parent)), size=1, replace=False)
+            self.idx = np.random.choice(np.arange(len(parent)), replace=False)
 
         def __len__(self):
             return self.size
