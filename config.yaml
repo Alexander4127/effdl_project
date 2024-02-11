@@ -16,7 +16,7 @@ steps:
   num_timesteps: 1000
 
 optim:
-  _target_: torch.optim.Adam
+  _target_: torch.optim.SGD
   lr: 1e-4
 
 trainer:
