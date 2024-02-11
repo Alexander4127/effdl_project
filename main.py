@@ -43,7 +43,7 @@ def main(cfg: DictConfig):
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ] +
-        ([transforms.RandomHorizontalFlip(), transforms.RandomVerticalFlip()] if cfg.augments.flip else [])
+        ([transforms.RandomHorizontalFlip()] if cfg.augments.flip else [])
     )
 
     dataset = CIFAR10(
