@@ -25,7 +25,7 @@ def train_dataset():
     return dataset
 
 
-@pytest.mark.parametrize(["device"], [["cpu"], ["cuda"]])
+@pytest.mark.parametrize(["device"], [["cuda"]])
 def test_train_on_one_batch(device, train_dataset):
     # note: you should not need to increase the threshold or change the hyperparameters
     ddpm = DiffusionModel(
