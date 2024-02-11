@@ -64,6 +64,9 @@ def main(cfg: DictConfig):
         if cfg.trainer.wandb.use:
             wandb.log({"init": inits, "sample": samples}, step=(i + 1) * len(dataloader))
 
+    if cfg.trainer.wandb.use:
+        wandb.finish()
+
 
 if __name__ == "__main__":
     main()
