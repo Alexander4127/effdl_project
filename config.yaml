@@ -18,7 +18,6 @@ steps:
 optim:
   _target_: torch.optim.Adam
   lr: 1e-5
-  weight_decay: 0.01
 
 trainer:
   log_step: 100
