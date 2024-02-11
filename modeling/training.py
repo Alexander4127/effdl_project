@@ -18,12 +18,7 @@ def train_step(model: DiffusionModel, inputs: torch.Tensor, optimizer: Optimizer
     loss = model(inputs)
     loss.backward()
     optimizer.step()
-    return loss
-
-
-def convert_numpy(samples):
-    grid = make_grid(samples, nrow=4)
-    return grid.mul(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).to("cpu", torch.uint8).numpy()
+    return loss.item()
 
 
 def train_epoch(model: DiffusionModel,
@@ -39,13 +34,21 @@ def train_epoch(model: DiffusionModel,
         loss_ema = train_loss if loss_ema is None else 0.9 * loss_ema + 0.1 * train_loss
         if step % cfg.log_step == 0 and cfg.wandb.use:
             lr = optimizer.param_groups[0]['lr']
-            wandb.log({"loss": train_loss, "lr": lr}, step=n_epoch * len(dataloader) + step)
+            wandb.log(
+                {
+                    "loss": train_loss,
+                    "lr": lr,
+                    "x": wandb.Image(x[0].detach().cpu().numpy())
+                },
+                step=n_epoch * len(dataloader) + step)
         pbar.set_description(f"loss: {loss_ema:.4f}")
 
 
-def generate_samples(model: DiffusionModel, device: str, path: str) -> Tuple[np.ndarray, np.ndarray]:
+def generate_samples(model: DiffusionModel, device: str, path: str, processing=None) -> Tuple[wandb.Image, wandb.Image]:
     model.eval()
     with torch.no_grad():
-        inits, samples = model.sample(8, (3, 32, 32), device=device)
-        save_image(make_grid(samples, nrow=4), path)
-        return convert_numpy(inits), convert_numpy(samples)
+        inits, samples = model.sample(8, (3, 32, 32), device=device, processing=processing)
+        path1, path2 = path + "_init.png", path + "_sample.png"
+        save_image(make_grid(inits, nrow=4), path1)
+        save_image(make_grid(samples, nrow=4), path2)
+        return wandb.Image(path1), wandb.Image(path2)

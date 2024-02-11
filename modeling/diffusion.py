@@ -32,7 +32,7 @@ class DiffusionModel(nn.Module):
 
         return self.criterion(eps, self.eps_model(x_t, timestep / self.num_timesteps))
 
-    def sample(self, num_samples: int, size, device) -> Tuple[torch.Tensor, torch.Tensor]:
+    def sample(self, num_samples: int, size, device, processing=None) -> Tuple[torch.Tensor, torch.Tensor]:
 
         z_i = torch.randn(num_samples, *size).to(device)
         x_i = z_i.clone()
@@ -43,7 +43,8 @@ class DiffusionModel(nn.Module):
             x_i = self.inv_sqrt_alphas[i].to(device) * (x_i - eps * self.one_minus_alpha_over_prod[i].to(device)) + \
                 self.sqrt_betas[i].to(device) * z
 
-        x_i = transforms.Normalize((-1, -1, -1), (2, 2, 2))(x_i)
+        if processing is not None:
+            x_i = processing(x_i)
         return z_i, x_i
 
 

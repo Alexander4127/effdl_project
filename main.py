@@ -1,4 +1,5 @@
 import hydra
+import logging
 from omegaconf import DictConfig, OmegaConf
 from pathlib import Path
 import torch
@@ -22,6 +23,7 @@ def main(cfg: DictConfig):
         dict_cfg = OmegaConf.to_container(cfg, resolve=True)
         wandb.init(config=dict_cfg, project=cfg.trainer.wandb.project, name=cfg.trainer.wandb.name)
 
+    logging.info(OmegaConf.to_yaml(cfg))
     ddpm = DiffusionModel(
         eps_model=UnetModel(cfg.arch.in_channels, cfg.arch.out_channels, hidden_size=cfg.arch.hidden_size),
         betas=(cfg.steps.beta_min, cfg.steps.beta_max),
@@ -54,12 +56,13 @@ def main(cfg: DictConfig):
     )
     optim = hydra.utils.instantiate(cfg.optim, ddpm.parameters())
 
+    processing = transforms.Normalize((-1, -1, -1), (2, 2, 2))
     for i in range(cfg.trainer.num_epochs):
         train_epoch(ddpm, dataloader, optim, i, cfg.trainer)
         torch.save(ddpm.state_dict(), f"saved/ch{i}.pth")
-        inits, samples = generate_samples(ddpm, cfg.trainer.device, f"samples/{i:02d}.png")
+        inits, samples = generate_samples(ddpm, cfg.trainer.device, f"samples/{i:02d}", processing)
         if cfg.trainer.wandb.use:
-            wandb.log({"init": wandb.Image(inits), "sample": wandb.Image(samples)}, step=(i + 1) * len(dataloader))
+            wandb.log({"init": inits, "sample": samples}, step=(i + 1) * len(dataloader))
 
 
 if __name__ == "__main__":
