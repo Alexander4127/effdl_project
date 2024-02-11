@@ -21,7 +21,7 @@ optim:
 
 trainer:
   log_step: 100
-  num_epochs: 20
+  num_epochs: 3
   device: cpu
   wandb:
     use: true
