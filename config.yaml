@@ -1,5 +1,5 @@
 augments:
-  flip: true
+  flip: false
 
 loader:
   batch_size: 128
@@ -17,7 +17,7 @@ steps:
 
 optim:
   _target_: torch.optim.Adam
-  lr: 1e-5
+  lr: 1e-4
 
 trainer:
   log_step: 100
@@ -26,4 +26,4 @@ trainer:
   wandb:
     use: true
     project: effdl_project
-    name: flip_augments
+    name: change_lr
