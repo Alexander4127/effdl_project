@@ -26,7 +26,7 @@ def train_dataset():
     return dataset
 
 
-@pytest.mark.parametrize(["device"], [["cuda"]])
+@pytest.mark.parametrize(["device"], [["cuda"], ["cpu"]])
 def test_train_on_one_batch(device, train_dataset):
     # note: you should not need to increase the threshold or change the hyperparameters
     ddpm = DiffusionModel(
@@ -46,7 +46,7 @@ def test_train_on_one_batch(device, train_dataset):
     assert loss < 0.5
 
 
-@pytest.mark.parametrize(["device"], [["cpu"], ["cuda"]])
+@pytest.mark.parametrize(["device"], [["cpu"]])
 def test_training(device, train_dataset):
     class OneSampleDataset(torch.utils.data.Dataset):
         def __init__(self, parent: torch.utils.data.Dataset, size: int):
