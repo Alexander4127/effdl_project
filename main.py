@@ -16,7 +16,11 @@ from modeling.unet import UnetModel
 @hydra.main(version_base=None, config_path=".", config_name="config")
 def main(cfg: DictConfig):
     cfg.trainer.device = "cuda" if torch.cuda.is_available() else "cpu"
-    Path("saved").mkdir(exist_ok=True)
+    if cfg.trainer.wandb.use:
+        saved_dir = f"saved/{cfg.trainer.wandb.name}"
+    else:
+        saved_dir = "saved"
+    Path(saved_dir).mkdir(exist_ok=True, parents=True)
     Path("samples").mkdir(exist_ok=True)
 
     if cfg.trainer.wandb.use:
@@ -60,7 +64,7 @@ def main(cfg: DictConfig):
     processing = transforms.Normalize((-1, -1, -1), (2, 2, 2))
     for i in range(cfg.trainer.num_epochs):
         train_epoch(ddpm, dataloader, optim, i, cfg.trainer)
-        torch.save(ddpm.state_dict(), f"saved/ch{i}.pth")
+        torch.save(ddpm.state_dict(), f"{saved_dir}/ch{i}.pth")
         inits, samples = generate_samples(ddpm, cfg.trainer.device, f"samples/{i:02d}", processing)
         if cfg.trainer.wandb.use:
             wandb.log({"init": inits, "sample": samples}, step=(i + 1) * len(dataloader))
