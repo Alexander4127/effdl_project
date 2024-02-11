@@ -22,6 +22,7 @@ def main(cfg: DictConfig):
     if cfg.trainer.wandb.use:
         dict_cfg = OmegaConf.to_container(cfg, resolve=True)
         wandb.init(config=dict_cfg, project=cfg.trainer.wandb.project, name=cfg.trainer.wandb.name)
+        wandb.log_artifact("config.yaml", name="HydraConfig")
 
     logging.info(OmegaConf.to_yaml(cfg))
     ddpm = DiffusionModel(
