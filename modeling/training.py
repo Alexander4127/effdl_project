@@ -38,7 +38,7 @@ def train_epoch(model: DiffusionModel,
                 {
                     "loss": train_loss,
                     "lr": lr,
-                    "x": wandb.Image(x[0].detach().cpu().numpy())
+                    "x": wandb.Image(x[0].detach().permute(1, 2, 0).cpu().numpy())
                 },
                 step=n_epoch * len(dataloader) + step)
         pbar.set_description(f"loss: {loss_ema:.4f}")
