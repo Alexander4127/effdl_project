@@ -63,9 +63,9 @@ def test_training(device, train_dataset):
 
     # note: implement and test a complete training procedure (including sampling)
     Path("tmp").mkdir(exist_ok=True, parents=True)
-    bs = 4
+    bs = 128
     sampled_dataset = OneSampleDataset(train_dataset, size=2 * bs)
-    samples = torch.concat([sampled_dataset[i][0].unsqueeze(0) for i in range(2 * bs)])
+    samples = torch.concat([sampled_dataset[i][0].unsqueeze(0) for i in range(8)])
     save_image(make_grid(samples, nrow=4), "tmp/dataset.png")
 
     ddpm = DiffusionModel(
@@ -79,7 +79,7 @@ def test_training(device, train_dataset):
     dataloader = DataLoader(sampled_dataset, batch_size=bs, shuffle=True)
 
     cfg = OmegaConf.create({"device": device, "log_step": 100, "wandb": {"use": False}})
-    for i in tqdm(range(10000)):
+    for i in tqdm(range(500)):
         train_epoch(ddpm, dataloader, optim, i, cfg)
 
     processing = Normalize((-1, -1, -1), (2, 2, 2))
