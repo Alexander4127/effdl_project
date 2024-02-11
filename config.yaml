@@ -26,4 +26,4 @@ trainer:
   wandb:
     use: true
     project: effdl_project
-    name: change_lr
+    name: sgd
